@@ -6,34 +6,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
-	"os"
-	"sync"
-
-	"github.com/go-redis/redis/v8"
 )
-
-var (
-	redisClient *redis.Client
-	once        sync.Once
-)
-
-// GetRedisClient initializes and returns a Redis client (singleton)
-func getRedisClient() *redis.Client {
-	once.Do(func() {
-		redisURL := os.Getenv("UPSTASH_REDIS_URL")
-		if redisURL == "" {
-			panic("UPSTASH_REDIS_URL environment variable is not set")
-		}
-
-		opt, err := redis.ParseURL(redisURL)
-		if err != nil {
-			panic("Failed to parse Redis URL: " + err.Error())
-		}
-
-		redisClient = redis.NewClient(opt)
-	})
-	return redisClient
-}
 
 // EnableCORS adds CORS headers to the response
 func enableCORS(w http.ResponseWriter, r *http.Request) bool {
