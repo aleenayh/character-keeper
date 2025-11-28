@@ -2,13 +2,10 @@
   "buildCommand": "cd frontend && npm install && npm run build",
   "outputDirectory": "frontend/dist/frontend/browser",
   "framework": null,
-  "routes": [
-    {
-      "handle": "filesystem"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
-    }
-  ]
+  "rewrites": [
+      {
+        "source": "/((?!api).*)",
+        "destination": "/index.html"
+      }
+    ]
 }
