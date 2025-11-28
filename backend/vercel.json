@@ -1,15 +1,8 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "cmd/server/main.go",
-      "use": "@vercel/go"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "cmd/server/main.go"
-    }
+  "rewrites": [
+    { "source": "/api/character", "destination": "/api/character" },
+    { "source": "/api/save", "destination": "/api/save" },
+    { "source": "/api/load", "destination": "/api/load" },
+    { "source": "/api/delete", "destination": "/api/delete" }
   ]
 }
