@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map, Observable, switchMap, of } from 'rxjs';
+import { environment } from '../../environments/environment.development';
 
 export interface Thread {
   id: string;
@@ -36,8 +37,9 @@ export interface CharacterResponse {
     providedIn: 'root',
   })
 export class CharacterService {
-    private apiUrl = 'http://localhost:8080/api/character';
-    private baseApiUrl = 'http://localhost:8080/api';
+
+    private apiUrl = `${environment.apiUrl}/character`;
+    private baseApiUrl = environment.apiUrl;
 
         // HttpClient is injected - like passing props but automatic
     constructor(private http: HttpClient) {}
