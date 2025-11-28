@@ -25,7 +25,7 @@ styleUrl: './app.css',
 encapsulation: ViewEncapsulation.None
 })
 export class AppComponent implements OnInit {
-title = 'Character Collector';
+title = 'Character Keeper';
 headerText = '';
 newUrl = '';
 characters: CharacterData[] = [];

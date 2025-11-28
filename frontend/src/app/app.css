@@ -121,6 +121,7 @@
 
 .main {
   max-width: 100vw;
+  overflow: auto;
   margin: -20px;
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial,
     sans-serif;
@@ -211,7 +212,7 @@ h1 {
 .add-character {
   display: flex;
   gap: 10px;
-  margin-bottom: 30px;
+  margin: 0 auto 30px;
 }
 
 .add-character input,
@@ -242,7 +243,7 @@ h1 {
 
 .characters-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 20px;
 }
 
@@ -396,4 +397,27 @@ h1 {
   justify-content: center;
   margin-top: 30px;
   margin-bottom: 30px;
+}
+
+.save-view-form {
+  display: flex;
+  gap: 10px;
+}
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+  .add-character,
+  .save-view-form {
+    flex-direction: column;
+  }
+
+  .add-character input,
+  .save-view-form input,
+  .add-character button,
+  .save-view-form button,
+  .load-view input,
+  .load-view button {
+    width: 100%;
+    box-sizing: border-box;
+  }
 }
