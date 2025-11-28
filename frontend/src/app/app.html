@@ -1,0 +1,117 @@
+<div class="main">
+  <div class="container">
+    <h1>{{ title }}</h1>
+
+    <div *ngIf="statusMessage" class="status-message" [ngClass]="statusType">
+      {{ statusMessage }}
+    </div>
+
+    <div class="summary-stats"></div>
+
+    <div class="todo-section" *ngIf="getTodoThreads().length > 0">
+      <div class="todo-header" (click)="toggleTodo()">
+        <h2>
+          Threads Needing Replies ({{ getTodoThreads().length }})
+          <span class="toggle-icon">{{ todoCollapsed ? '▶' : '▼' }}</span>
+        </h2>
+      </div>
+
+      <div class="todo-list" *ngIf="!todoCollapsed">
+        <div
+          *ngFor="let todo of getTodoThreads()"
+          class="todo-item"
+          [ngClass]="getTodoItemClasses(todo)"
+        >
+          <div class="todo-topline">
+            <div class="todo-character">{{ todo.characterName }}</div>
+            <div class="divider">•</div>
+            <div class="todo-thread-title">
+              <a [href]="todo.url" target="_blank">{{ todo.title }}</a>
+            </div>
+          </div>
+          <div class="todo-meta">
+            <span class="participants">With: {{ todo.participants }}</span>
+            <span class="divider">•</span>
+            <span class="last-post"
+              >Last: {{ todo.lastPoster }} on {{ formatDate(todo.lastPostDate) }}</span
+            >
+            <span class="divider">•</span>
+            <span class="age-warning" *ngIf="getDaysSincePost(todo.lastPostDate) > 14">
+              ⚠️ {{ getDaysSincePost(todo.lastPostDate) }} days old
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="add-character">
+      <input type="text" [(ngModel)]="headerText" placeholder="Enter character name" />
+      <input
+        type="text"
+        [(ngModel)]="newUrl"
+        placeholder="Enter threadlog URL"
+        (keyup.enter)="addCharacter()"
+      />
+      <button (click)="addCharacter()">Add Character</button>
+    </div>
+
+    <div class="characters-grid">
+      <div *ngFor="let char of characters" class="character-card">
+        <button class="remove-btn" (click)="removeCharacter(char.id)">×</button>
+        <app-character-view
+          [headerText]="char.headerText"
+          [url]="char.url"
+          [content]="char.content"
+          [loading]="char.loading"
+          [error]="char.error"
+          [profileUrl]="char.profileUrl"
+          [threads]="char.threads"
+          [stats]="char.stats"
+        ></app-character-view>
+      </div>
+    </div>
+
+    <div *ngIf="characters.length === 0" class="empty-state">
+      No characters added yet. Enter a URL above to get started or load a view below.
+      <div class="load-view">
+        <input
+          type="text"
+          [(ngModel)]="viewString"
+          placeholder="Enter view key"
+          (keyup.enter)="loadView()"
+        />
+        <button (click)="loadView()">Load</button>
+      </div>
+    </div>
+
+    <div *ngIf="characters.length !== 0" class="save-view">
+      <div>
+        <h2>Leaving?</h2>
+        <p>
+          Don't worry, we'll save your characters for you! In fact, if you come back on the same
+          browser next time, we already did save them - you can navigate away and they'll be here
+          when you get back.
+        </p>
+        <p>
+          If you'd like to access this same view on another device or browser, you can save by
+          entering a key below and clicking the button. You will need to enter the same key again on
+          your next device to load this view. Pick something unique to avoid getting overwritten!
+        </p>
+      </div>
+      <div style="display: flex; gap: 10px">
+        <input type="text" [(ngModel)]="viewString" placeholder="Enter a save/load key" />
+        <button (click)="saveView()">Save</button>
+      </div>
+    </div>
+
+    <div class="theme-selector">
+      <label for="theme-select">Theme:</label>
+      <select id="theme-select" [(ngModel)]="currentTheme" (change)="changeTheme(currentTheme)">
+        <option value="default">Default</option>
+        <option value="beach-day">Beach Day</option>
+        <option value="nightfall">Nightfall</option>
+        <option value="sorbet">Sorbet</option>
+      </select>
+    </div>
+  </div>
+</div>

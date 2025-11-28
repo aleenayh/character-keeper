@@ -1,0 +1,59 @@
+<div class="character-view">
+  <div class="header">
+    <h2>{{ headerText }}</h2>
+
+    <div class="stats" *ngIf="stats">
+      <div class="stat-item">
+        <span class="stat-value">
+          {{ stats.age }}
+          <span class="age-warning" *ngIf="stats.ageNeedsUpdate">(needs update!)</span>
+        </span>
+      </div>
+      <div class="stat-item" *ngIf="stats.blood">
+        <span class="stat-value">{{ stats.blood }}</span>
+      </div>
+      <div class="stat-item" *ngIf="stats.ship">
+        <span class="stat-value">{{ stats.ship }}</span>
+      </div>
+    </div>
+
+    <div class="links">
+      <a [href]="url" target="_blank">Threadlog</a>
+      <a *ngIf="profileUrl" [href]="profileUrl" target="_blank">Profile</a>
+      <span class="checkbox-wrapper">
+        <input type="checkbox" id="showInactive-{{ headerText }}" [(ngModel)]="showInactive" />
+        <label for="showInactive-{{ headerText }}">Show Closed Threads</label>
+      </span>
+    </div>
+  </div>
+
+  <div class="content" *ngIf="!loading && !error">
+    <div class="thread-list" *ngIf="threads.length > 0">
+      <ng-container *ngFor="let thread of threads">
+        <div
+          *ngIf="showInactive || thread.isActive"
+          class="thread-item"
+          [ngClass]="getThreadClasses(thread)"
+        >
+          <div class="thread-title">
+            <a [href]="thread.url" target="_blank">{{ thread.title }}</a>
+          </div>
+          <div class="thread-meta">
+            <span class="participants">{{ thread.participants }}</span>
+            <span class="divider">•</span>
+            <span class="last-post"
+              >Last: {{ thread.lastPoster }} on {{ formatDate(thread.lastPostDate) }}</span
+            >
+          </div>
+        </div>
+      </ng-container>
+    </div>
+    <div class="no-threads" *ngIf="threads.length === 0">No threads found</div>
+  </div>
+
+  <div class="loading" *ngIf="loading">
+    {{ loadingString }}
+  </div>
+
+  <div class="error" *ngIf="error">Error: {{ error }}</div>
+</div>
