@@ -152,7 +152,7 @@ export class CharacterService {
     private calculateFictionalAge(birthday: string): number | null {
       try {
         const birthDate = new Date(birthday);
-        if (isNaN(birthDate.getTime())) return null;
+        if (Number.isNaN(birthDate.getTime())) return null;
 
         // Today's date in the fictional setting (130 years ago)
         const today = new Date();
@@ -191,7 +191,7 @@ export class CharacterService {
         if (ageElement) {
           const ageText = ageElement.textContent?.trim() || '';
           const ageNum = parseInt(ageText, 10);
-          if (!isNaN(ageNum)) {
+          if (!Number.isNaN(ageNum)) {
             stats.age = ageNum;
           }
         }
