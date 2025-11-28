@@ -3,8 +3,6 @@ package handler
 import (
 	"encoding/json"
 	"net/http"
-
-	"github.com/go-redis/redis/v8"
 )
 
 type DeleteResponse struct {
