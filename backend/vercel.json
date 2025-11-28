@@ -1,8 +1,0 @@
-{
-  "rewrites": [
-    { "source": "/api/character", "destination": "/api/character" },
-    { "source": "/api/save", "destination": "/api/save" },
-    { "source": "/api/load", "destination": "/api/load" },
-    { "source": "/api/delete", "destination": "/api/delete" }
-  ]
-}
