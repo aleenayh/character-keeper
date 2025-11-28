@@ -16,7 +16,7 @@ var (
 )
 
 // GetRedisClient initializes and returns a Redis client (singleton)
-func GetRedisClient() *redis.Client {
+func getRedisClient() *redis.Client {
 	once.Do(func() {
 		redisURL := os.Getenv("UPSTASH_REDIS_URL")
 		if redisURL == "" {
@@ -34,7 +34,7 @@ func GetRedisClient() *redis.Client {
 }
 
 // EnableCORS adds CORS headers to the response
-func EnableCORS(w http.ResponseWriter, r *http.Request) bool {
+func enableCORS(w http.ResponseWriter, r *http.Request) bool {
 	origin := r.Header.Get("Origin")
 
 	allowedOrigins := map[string]bool{
@@ -66,7 +66,7 @@ type LoadResponse struct {
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 	// Handle CORS
-	if EnableCORS(w, r) {
+	if enableCORS(w, r) {
 		return
 	}
 
@@ -81,7 +81,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	client := GetRedisClient()
+	client := getRedisClient()
 	ctx := r.Context()
 	redisKey := "user_save:" + key
 
