@@ -17,7 +17,7 @@ type SaveResponse struct {
 	SavedAt string `json:"savedAt"`
 }
 
-func Save(w http.ResponseWriter, r *http.Request) {
+func Handler(w http.ResponseWriter, r *http.Request) {
 	// Handle CORS
 	if EnableCORS(w, r) {
 		return

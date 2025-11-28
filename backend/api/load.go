@@ -14,7 +14,7 @@ type LoadResponse struct {
 	LoadedAt string      `json:"loadedAt"`
 }
 
-func Load(w http.ResponseWriter, r *http.Request) {
+func Handler(w http.ResponseWriter, r *http.Request) {
 	// Handle CORS
 	if EnableCORS(w, r) {
 		return

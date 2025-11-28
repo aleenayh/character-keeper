@@ -14,7 +14,7 @@ type CharacterResponse struct {
 	Error   string `json:"error,omitempty"`
 }
 
-func Character(w http.ResponseWriter, r *http.Request) {
+func Handler(w http.ResponseWriter, r *http.Request) {
 	// Handle CORS
 	if EnableCORS(w, r) {
 		return

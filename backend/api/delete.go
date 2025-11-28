@@ -12,7 +12,7 @@ type DeleteResponse struct {
 	Key    string `json:"key"`
 }
 
-func Delete(w http.ResponseWriter, r *http.Request) {
+func Handler(w http.ResponseWriter, r *http.Request) {
 	// Handle CORS
 	if EnableCORS(w, r) {
 		return
