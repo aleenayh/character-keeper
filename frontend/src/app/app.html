@@ -57,7 +57,30 @@
 
     <div class="characters-grid">
       <div *ngFor="let char of characters" class="character-card">
-        <button class="remove-btn" (click)="removeCharacter(char.id)">×</button>
+        <div class="management-buttons">
+          <button
+            class="move-btn"
+            *ngIf="showManagementButtons === char.id"
+            (click)="reorderCharacters(char.id, 'up')"
+          >
+            ▲
+          </button>
+          <button
+            class="move-btn"
+            *ngIf="showManagementButtons === char.id"
+            (click)="reorderCharacters(char.id, 'down')"
+          >
+            ▼
+          </button>
+          <button
+            class="remove-btn"
+            *ngIf="showManagementButtons === char.id"
+            (click)="removeCharacter(char.id)"
+          >
+            ×
+          </button>
+          <button class="management-btn" (click)="toggleManagementButtons(char.id)">⋮</button>
+        </div>
         <app-character-view
           [headerText]="char.headerText"
           [url]="char.url"

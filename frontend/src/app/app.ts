@@ -33,6 +33,7 @@ viewString = '';
 statusMessage = '';
 statusType: 'success' | 'error' | '' = '';
 currentTheme: 'default' | 'beach-day' | 'nightfall' | 'sorbet' = 'default';
+showManagementButtons: number | null = null;
 
     // Service injected automatically
     constructor(
@@ -356,4 +357,25 @@ currentTheme: 'default' | 'beach-day' | 'nightfall' | 'sorbet' = 'default';
       });
     }
 
+    reorderCharacters(uid:number, move: "up" | "down") {
+      const index = this.characters.findIndex(c => c.id === uid);
+      if (index === -1) return;
+      const newIndex = move === "up" ? index - 1 : index + 1;
+      if (newIndex < 0 || newIndex >= this.characters.length) return;
+      const character = this.characters[index];
+      this.characters = this.characters.map((char, i) =>
+        i === index ? this.characters[newIndex] :
+        i === newIndex ? character : char
+      );
+      this.characters[newIndex] = character;
+      this.saveCharacters();
+    }
+
+    toggleManagementButtons(uid:number) {
+					if (this.showManagementButtons === uid) {
+						this.showManagementButtons = null;
+					} else {
+						this.showManagementButtons = uid;
+					}
+				}
 }

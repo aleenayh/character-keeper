@@ -255,16 +255,29 @@ h1 {
   background: var(--card-bg);
 }
 
-.remove-btn {
+.empty-state {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 40px;
+}
+
+/* Management Buttons */
+.management-buttons {
+  color: var(--primary-color);
   position: absolute;
-  top: 10px;
   right: 10px;
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 5px;
+  transition: all 0.2s;
+}
+.remove-btn {
   background: var(--danger-color);
   color: white;
   border: none;
   border-radius: 50%;
-  width: 30px;
-  height: 30px;
+  width: 25px;
+  height: 25px;
   cursor: pointer;
   font-size: 20px;
   line-height: 1;
@@ -274,12 +287,29 @@ h1 {
   background: var(--danger-hover);
 }
 
-.empty-state {
-  text-align: center;
-  color: var(--text-muted);
-  padding: 40px;
+.management-btn {
+  color: var(--primary-color);
+  background: none;
+  border: none;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  font-size: 20px;
+  line-height: 1;
+  font-weight: 800;
 }
 
+.move-btn {
+  color: var(--primary-color);
+  background: none;
+  border: none;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  font-size: 20px;
+  line-height: 1;
+  font-weight: 800;
+}
 /* TO-DO List Section */
 .todo-section {
   background-color: var(--item-bg-chill);
