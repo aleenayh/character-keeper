@@ -1,6 +1,11 @@
 <div class="character-view">
   <div class="header">
-    <h2>{{ headerText }}</h2>
+    <h2>
+      {{ headerText }}
+      <div [ngClass]="acSafe ? 'acSafe-good' : 'acSafe-bad'">
+        {{ acSafe ? 'Safe' : 'Not Safe' }}
+      </div>
+    </h2>
 
     <div class="stats" *ngIf="stats">
       <div class="stat-item">

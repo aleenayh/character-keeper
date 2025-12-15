@@ -39,6 +39,26 @@
   color: var(--text-muted);
 }
 
+.acSafe-good {
+  display: inline-block;
+  color: var(--success-text);
+  font-size: 0.6em;
+}
+
+.acSafe-bad {
+  display: inline-block;
+  color: var(--error-text);
+  font-size: 0.6em;
+}
+
+.acSafe-good::before {
+  content: '✅';
+}
+
+.acSafe-bad::before {
+  content: '❌';
+}
+
 .age-warning {
   color: #dc3545;
   font-weight: 700;

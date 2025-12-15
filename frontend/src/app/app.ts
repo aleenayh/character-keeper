@@ -14,6 +14,7 @@ error: string;
 profileUrl?: string;
 threads: Thread[];
 stats?: CharacterStats;
+acSafe: boolean;
 }
 
 @Component({
@@ -58,18 +59,15 @@ showManagementButtons: number | null = null;
     }
 
     private applyTheme(theme: 'default' | 'beach-day' | 'nightfall' | 'sorbet') {
-      console.log('Applying theme', theme);
       const root = document.documentElement;
       if (theme === 'default') {
         root.removeAttribute('data-theme');
       } else {
         root.setAttribute('data-theme', theme);
-        console.log('Theme applied', root.getAttribute('data-theme'));
       }
     }
 
     changeTheme(theme: 'default' | 'beach-day' | 'nightfall' | 'sorbet') {
-      console.log('Changing theme to', theme);
       this.currentTheme = theme;
       this.applyTheme(theme);
       localStorage.setItem('theme', theme);
@@ -109,7 +107,8 @@ showManagementButtons: number | null = null;
     error: '',
     profileUrl: undefined,
     threads: [],
-    stats: undefined
+    stats: undefined,
+    acSafe: false
   };
 
   this.characters.push(character);
@@ -120,7 +119,6 @@ showManagementButtons: number | null = null;
 
     loadCharacter(character: CharacterData) {
       const index = this.characters.findIndex(c => c.id === character.id);
-      console.log('Loading character', character.id, 'at index', index);
       if (index === -1) return;
     
       // Update to loading state
@@ -131,10 +129,6 @@ showManagementButtons: number | null = null;
       this.characterService.getCharacterData(character.url).subscribe({
         next: (response) => {
           this.ngZone.run(() => {
-            console.log('Received response for character', character.id);
-            console.log('Parsed threads:', response.threads.length);
-            console.log('Profile URL:', response.profileUrl);
-            console.log('Stats:', response.stats);
             // Create completely new array with parsed data
             this.characters = this.characters.map((char, i) =>
               i === index ? {
@@ -143,17 +137,16 @@ showManagementButtons: number | null = null;
                 profileUrl: response.profileUrl,
                 threads: response.threads,
                 stats: response.stats,
+                acSafe: response.acSafe,
                 loading: false
               } : char
             );
-            console.log('Updated character loading:', this.characters[index].loading);
-            console.log('Character stats after update:', this.characters[index].stats);
             this.cdr.detectChanges();
           });
         },
         error: (err) => {
           this.ngZone.run(() => {
-            console.log('Error loading character', character.id);
+            console.error('Error loading character', character.id, err.message);
             // Create completely new array
             this.characters = this.characters.map((char, i) =>
               i === index ? { ...char, error: err.message, loading: false } : char
@@ -190,7 +183,8 @@ showManagementButtons: number | null = null;
           error: '',
           profileUrl: undefined,
           threads: [],
-          stats: undefined
+          stats: undefined,
+          acSafe: false
         }));
       } catch {
         return [];
@@ -309,7 +303,6 @@ showManagementButtons: number | null = null;
             this.cdr.detectChanges();
 
             this.showStatus(`Successfully loaded "${key}" with ${this.characters.length} character(s)!`, 'success');
-            console.log('Loaded characters:', this.characters);
           });
         },
         error: (err) => {
@@ -347,7 +340,6 @@ showManagementButtons: number | null = null;
 
       this.characterService.saveCharacterData(key, charactersToSave).subscribe({
         next: (response) => {
-          console.log('Save response:', response);
           this.showStatus(`Successfully saved "${key}" with ${this.characters.length} character(s)!`, 'success');
         },
         error: (err) => {
