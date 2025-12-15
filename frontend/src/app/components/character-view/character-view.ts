@@ -20,6 +20,7 @@ export class CharacterViewComponent implements OnChanges, OnDestroy {
 @Input() profileUrl?: string;
 @Input() threads: Thread[] = [];
 @Input() stats?: CharacterStats;
+@Input() acSafe: boolean = false;
 @Input() loadingString: string = 'Loading...';
 
 // Local component state for toggling inactive threads

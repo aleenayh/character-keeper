@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map, Observable, switchMap, of } from 'rxjs';
 import { environment } from '../../environments/environment';
+import {DateTime } from 'luxon';
 
 export interface Thread {
   id: string;
@@ -31,6 +32,7 @@ export interface CharacterResponse {
   profileUrl?: string;
   threads: Thread[];
   stats?: CharacterStats;
+  acSafe: boolean;
   }
 
   @Injectable({
@@ -148,6 +150,17 @@ export class CharacterService {
       return threads;
     }
 
+    private checkAcSafe(characterUid: number, threads: Thread[]): boolean {
+      const myLastPostedThreads = threads.filter(thread => thread.lastPosterUid === characterUid);
+      //find the first sunday of the current month 
+      const lastAcDate = DateTime.now().startOf('month').set({ weekday: 7 });
+      const mostRecentPostedThread = myLastPostedThreads.reduce((latest, current) => {
+        return current.lastPostDate > latest.lastPostDate ? current : latest;
+      }, myLastPostedThreads[0]);
+      const mostRecentPostDate = DateTime.fromJSDate(mostRecentPostedThread.lastPostDate);
+      return mostRecentPostDate > lastAcDate;
+    }
+
     // Helper to calculate age based on fictional date (130 years ago)
     private calculateFictionalAge(birthday: string): number | null {
       try {
@@ -182,51 +195,55 @@ export class CharacterService {
         ship: '',
         birthday: null,
         calculatedAge: null,
-        ageNeedsUpdate: false
+        ageNeedsUpdate: false,
       };
 
       try {
-        // Parse age from mp-age element
-        const ageElement = doc.querySelector('.mp-age');
-        if (ageElement) {
-          const ageText = ageElement.textContent?.trim() || '';
-          const ageNum = parseInt(ageText, 10);
-          if (!Number.isNaN(ageNum)) {
-            stats.age = ageNum;
-          }
-        }
+							// Parse age from mp-age element
+							const ageElement = doc.querySelector(".mp-age");
+							if (ageElement) {
+								const ageText = ageElement.textContent?.trim() || "";
+								const ageNum = parseInt(ageText, 10);
+								if (!Number.isNaN(ageNum)) {
+									stats.age = ageNum;
+								}
+							}
 
-        // Parse blood type from mp-blood element
-        const bloodElement = doc.querySelector('.mp-blood');
-        if (bloodElement) {
-          stats.blood = bloodElement.textContent?.trim() || '';
-        }
+							// Parse blood type from mp-blood element
+							const bloodElement = doc.querySelector(".mp-blood");
+							if (bloodElement) {
+								stats.blood = bloodElement.textContent?.trim() || "";
+							}
 
-        // Parse ship from mp-ship element
-        const shipElement = doc.querySelector('.mp-ship');
-        if (shipElement) {
-          stats.ship = shipElement.textContent?.trim() || '';
-        }
+							// Parse ship from mp-ship element
+							const shipElement = doc.querySelector(".mp-ship");
+							if (shipElement) {
+								stats.ship = shipElement.textContent?.trim() || "";
+							}
 
-        // Parse birthday from mp-profilecontent > mp-scrollpad
-        const profileContent = doc.querySelector('.mp-profilecontent .mp-scrollpad');
-        if (profileContent) {
-          const html = profileContent.innerHTML;
-          const birthdayMatch = html.match(/<strong>Birthdate:<\/strong>\s*([^<]+)/i);
-          if (birthdayMatch) {
-            const birthdayStr = birthdayMatch[1].trim();
-            stats.birthday = birthdayStr;
+							// Parse birthday from mp-profilecontent > mp-scrollpad
+							const profileContent = doc.querySelector(
+								".mp-profilecontent .mp-scrollpad",
+							);
+							if (profileContent) {
+								const html = profileContent.innerHTML;
+								const birthdayMatch = html.match(
+									/<strong>Birthdate:<\/strong>\s*([^<]+)/i,
+								);
+								if (birthdayMatch) {
+									const birthdayStr = birthdayMatch[1].trim();
+									stats.birthday = birthdayStr;
 
-            // Calculate expected age
-            stats.calculatedAge = this.calculateFictionalAge(birthdayStr);
+									// Calculate expected age
+									stats.calculatedAge = this.calculateFictionalAge(birthdayStr);
 
-            // Check if age needs update
-            if (stats.age !== null && stats.calculatedAge !== null) {
-              stats.ageNeedsUpdate = stats.age !== stats.calculatedAge;
-            }
-          }
-        }
-      } catch (error) {
+									// Check if age needs update
+									if (stats.age !== null && stats.calculatedAge !== null) {
+										stats.ageNeedsUpdate = stats.age !== stats.calculatedAge;
+									}
+								}
+							}
+						}catch (error) {
         console.warn('Failed to parse character stats:', error);
       }
 
@@ -235,13 +252,11 @@ export class CharacterService {
 
     // Fetch and parse profile data
     private fetchProfileStats(profileUrl: string): Observable<CharacterStats> {
-      console.log('Fetching profile stats from:', profileUrl);
       return this.http.get<CharacterResponse>(`${this.apiUrl}?url=${encodeURIComponent(profileUrl)}`).pipe(
         map(response => {
           const parser = new DOMParser();
           const doc = parser.parseFromString(response.content, 'text/html');
           const stats = this.parseCharacterStats(doc);
-          console.log('Parsed stats:', stats);
           return stats;
         })
       );
@@ -265,6 +280,8 @@ export class CharacterService {
           const profileUrl = this.buildProfileLink(characterUid);
           const threads = this.parseThreads(doc, characterUid);
 
+          const acSafe = this.checkAcSafe(characterUid, threads);
+
           // If we have a profile URL, fetch the stats
           if (profileUrl) {
             return this.fetchProfileStats(profileUrl).pipe(
@@ -273,7 +290,8 @@ export class CharacterService {
                 content,
                 profileUrl,
                 threads,
-                stats
+                stats,
+                acSafe
               }))
             );
           } else {
@@ -282,7 +300,8 @@ export class CharacterService {
               url,
               content,
               profileUrl,
-              threads
+              threads,
+              acSafe
             });
           }
         })
