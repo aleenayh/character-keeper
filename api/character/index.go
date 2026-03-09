@@ -72,7 +72,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Fetch the URL
-	resp, err := http.Get(targetURL)
+	req, err := http.NewRequestWithContext(r.Context(), "GET", targetURL, nil)
+	req.Header.Set("User-Agent", "Aleena-Weekend-Work")
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		w.WriteHeader(http.StatusBadGateway)
 		json.NewEncoder(w).Encode(CharacterResponse{

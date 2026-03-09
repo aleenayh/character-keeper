@@ -8,5 +8,7 @@ This is a single-page app meant to be used by the writing community of CharmingR
 
 # Run commands
 
-Backend: `cd backend/cmd/server && go run .`
+Local Backend: `cd backend/cmd/server && go run .`
 Frontend: `cd frontend && npm start`
+
+In production backend functionality is hosted via Vercel Serverless Functions (api/ folder)
