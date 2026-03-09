@@ -5,3 +5,8 @@ A one-day personal project I spun up to figure out how Go and Angular work. My c
 # Okay but what does it do?
 
 This is a single-page app meant to be used by the writing community of CharmingRP.com. Users can add any amount of character links from the site and it pulls information together in an easy-to-consume view, which can be saved to load on other devices later. It's minimally useful for people with one or two characters but a big time saver for people with 20+ characters to balance.
+
+# Run commands
+
+Backend: `cd backend/cmd/server && go run .`
+Frontend: `cd frontend && npm start`

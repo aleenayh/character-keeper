@@ -27,7 +27,19 @@ type LoadResponse struct {
 	LoadedAt string      `json:"loadedAt"`
 }
 
+func requireRedis(w http.ResponseWriter) bool {
+	if RedisClient == nil {
+		http.Error(w, "Save/load is unavailable — Redis is not connected", http.StatusServiceUnavailable)
+		return false
+	}
+	return true
+}
+
 func SaveCharacterData(w http.ResponseWriter, r *http.Request) {
+	if !requireRedis(w) {
+		return
+	}
+
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
@@ -84,6 +96,10 @@ func SaveCharacterData(w http.ResponseWriter, r *http.Request) {
 }
 
 func LoadCharacterData(w http.ResponseWriter, r *http.Request) {
+	if !requireRedis(w) {
+		return
+	}
+
 	if r.Method != http.MethodGet {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
@@ -128,6 +144,10 @@ func LoadCharacterData(w http.ResponseWriter, r *http.Request) {
 }
 
 func DeleteCharacterData(w http.ResponseWriter, r *http.Request) {
+	if !requireRedis(w) {
+		return
+	}
+
 	if r.Method != http.MethodDelete {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return

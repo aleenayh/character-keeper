@@ -19,23 +19,23 @@ func main() {
 	}
 	redisURL := os.Getenv("UPSTASH_REDIS_URL")
 	if redisURL == "" {
-		log.Fatal("UPSTASH_REDIS_URL environment variable is not set")
+		log.Println("WARNING: UPSTASH_REDIS_URL not set — save/load features will be unavailable")
+	} else {
+		opt, err := redis.ParseURL(redisURL)
+		if err != nil {
+			log.Printf("WARNING: Failed to parse Redis URL: %v — save/load features will be unavailable", err)
+		} else {
+			client := redis.NewClient(opt)
+			ctx := context.Background()
+			_, err = client.Ping(ctx).Result()
+			if err != nil {
+				log.Printf("WARNING: Failed to connect to Redis: %v — save/load features will be unavailable", err)
+			} else {
+				handlers.RedisClient = client
+				fmt.Println("Successfully connected to Redis")
+			}
+		}
 	}
-
-	opt, err := redis.ParseURL(redisURL)
-	if err != nil {
-		log.Fatalf("Failed to parse Redis URL: %v", err)
-	}
-
-	handlers.RedisClient = redis.NewClient(opt)
-
-	ctx := context.Background()
-	_, err = handlers.RedisClient.Ping(ctx).Result()
-	if err != nil {
-		log.Fatalf("Failed to connect to Redis: %v", err)
-	}
-
-	fmt.Println("Successfully connected to Redis")
 
 	mux := http.NewServeMux()
 
